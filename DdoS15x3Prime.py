@@ -1,142 +1,324 @@
 import random
-import socket
-import threading
-import os
 import time
 import sys
-import signal
-import json
+import os
+import socket
+import threading
 import requests
 from datetime import datetime
+from urllib.parse import urlparse
 
-# ----------- Colors -----------
-GREEN = '\033[92m'
-BLUE = '\033[94m'
-GRAY = '\033[90m'
-RED = '\033[91m'
-YELLOW = '\033[93m'
-CYAN = '\033[96m'
-PURPLE = '\033[95m'
-ORANGE = '\033[38;5;208m'
-RESET = '\033[0m'
-BOLD = '\033[1m'
-UNDERLINE = '\033[4m'
+# ----------- الألوان -----------
+class Colors:
+    GREEN = '\033[92m'
+    BLUE = '\033[94m'
+    GRAY = '\033[90m'
+    RED = '\033[91m'
+    YELLOW = '\033[93m'
+    CYAN = '\033[96m'
+    PURPLE = '\033[95m'
+    ORANGE = '\033[38;5;208m'
+    PINK = '\033[38;5;213m'
+    MAGENTA = '\033[35m'
+    RESET = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+    BLINK = '\033[5m'
 
-# ----------- Clear Screen -----------
+# ----------- تأثيرات الكتابة -----------
+def type_effect(text, color=Colors.GRAY, delay=0.02):
+    for char in text:
+        print(color + char + Colors.RESET, end='', flush=True)
+        time.sleep(delay)
+    print()
+
+# ----------- تنظيف الشاشة -----------
 def clear_screen():
     os.system("cls" if os.name == "nt" else "clear")
 
-# ----------- Animated Banner -----------
+# ----------- شعار متحرك متقدم -----------
 def animated_banner():
-    banners = [
+    frames = [
         f"""
-{ORANGE}╔═╗┬ ┬╔╦╗┌─┐┌┬┐  ╔═╗╔═╗╔═╗
-{ORANGE}╠═╝│ │ ║║│ │ │   ╚═╗║  ║╣ 
-{ORANGE}╩  └─┘╩ ╩└─┘ ┴   ╚═╝╚═╝╚═╝
-{YELLOW}     15x3 - Power Botnet Edition
+{Colors.MAGENTA}╔╦╗╔═╗╔═╗╔═╗╦ ╦  ╔═╗╔═╗╔═╗╔═╗╔╦╗
+{Colors.MAGENTA} ║ ║╣ ╚═╗╚═╗╠═╣  ╠═╣║ ║║ ║║╣  ║ 
+{Colors.MAGENTA} ╩ ╚═╝╚═╝╚═╝╩ ╩  ╩ ╩╚═╝╚═╝╚═╝ ╩ 
+{Colors.YELLOW}    Advanced Testing Suite v5.0
         """,
         f"""
-{GREEN}█████╗ ██╗   ██╗███╗   ███╗ █████╗ ███╗   ██╗
-{GREEN}██╔══██╗╚██╗ ██╔╝████╗ ████║██╔══██╗████╗  ██║
-{GREEN}███████║ ╚████╔╝ ██╔████╔██║███████║██╔██╗ ██║
-{GREEN}██╔══██║  ╚██╔╝  ██║╚██╔╝██║██╔══██║██║╚██╗██║
-{GREEN}██║  ██║   ██║   ██║ ╚═╝ ██║██║  ██║██║ ╚████║
-{GREEN}╚═╝  ╚═╝   ╚═╝   ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝
-{YELLOW}         Power Botnet Edition
+{Colors.CYAN}┌─┐┬─┐┌─┐┌─┐┬ ┬┌─┐┌┐┌┌┬┐┬┌┐┌┌─┐
+{Colors.CYAN}├─┘├┬┘│ │├─┘├─┤├─┤│││ │ │││││ │
+{Colors.CYAN}┴  ┴└─└─┘┴  ┴ ┴┴ ┴┘└┘ ┴ ┴┘└┘└─┘
+{Colors.YELLOW}    Multi-Protocol Load Tester
+        """,
+        f"""
+{Colors.ORANGE}╦ ╦╔═╗╔╗╔╔╦╗╦╔═╗╔═╗╔╦╗╔═╗╦╔╗╔
+{Colors.ORANGE}╠═╣║ ║║║║ ║║║║  ╠═╣ ║ ║╣ ║║║║
+{Colors.ORANGE}╩ ╩╚═╝╝╚╝═╩╝╩╚═╝╩ ╩ ╩ ╚═╝╩╝╚╝
+{Colors.YELLOW}    Professional Edition
         """
     ]
     
-    for i in range(5):
+    for i in range(10):
         clear_screen()
-        print(banners[i % 2])
-        time.sleep(0.3)
+        print(frames[i % 3])
+        time.sleep(0.15)
 
-# ----------- Print Logo -----------
+# ----------- شعار ثابت مع تصميم متقدم -----------
 def print_logo():
     logo = f"""
-{GREEN}╔═══╗╔╗ ╔╗╔═══╗╔═══╗╔═══╗╔╗╔══╗╔═══╗
-{GREEN}║╔═╗║║║ ║║║╔══╝║╔═╗║║╔═╗║║║╚╣─╝║╔═╗║
-{GREEN}║╚══╗║║ ║║║╚══╗║║ ║║║║ ╚╝║║ ║║ ║╚══╗
-{GREEN}╚══╗║║║ ║║║╔══╝║║ ║║║║ ╔╗║║ ║║ ╚══╗║
-{GREEN}║╚═╝║║╚═╝║║╚══╗║╚═╝║║╚═╝║║╚╗║║ ║╚═╝║
-{GREEN}╚═══╝╚═══╝╚═══╝╚═══╝╚═══╝╚═╝╚╝ ╚═══╝
-{YELLOW}         Power Botnet Edition
-{RESET}"""
+{Colors.PINK}╭━━━┳━━━┳━━━━┳╮╱╱╭┳━━━┳━━━┳━━━╮
+{Colors.PINK}┃╭━━┫╭━╮┃╭╮╭╮┃┃╱╱┃┃╭━╮┃╭━╮┃╭━╮┃
+{Colors.PINK}┃╰━━┫╰━╯┣╯┃┃╰┫┃╱╱┃┃╰━╯┃┃╱┃┃╰━╯┃
+{Colors.PINK}┃╭━━┫╭╮╭╯╱┃┃╱┃┃╱╭┫┃╭╮╭┫┃╱┃┃╭╮╭╯
+{Colors.PINK}┃╰━━┫┃┃╰╮╱┃┃╱┃╰━╯┃┃┃┃╰┫╰━╯┃┃┃╰╮
+{Colors.PINK}╰━━━┻╯╰━╯╱╰╯╱╰━━━┻╯╯╰━┻━━━┻╯╰━╯
+{Colors.YELLOW}         Ultimate Testing Framework
+{Colors.RESET}"""
     print(logo)
 
-# ----------- Welcome Message -----------
-def welcome_message():
-    print(f"{GREEN}╔══════════════════════════════════════════════════════════════╗")
-    print(f"║{BOLD}{CYAN}               WELCOME TO AYMAN 15x3 BOTNET{RESET}{GREEN}                  ║")
-    print(f"║{BOLD}{CYAN}           Advanced Network Penetration Testing{RESET}{GREEN}                ║")
-    print(f"╚══════════════════════════════════════════════════════════════╝{RESET}")
-    print(f"{YELLOW}🚀 Initializing Power Botnet System...{RESET}")
-    time.sleep(1)
-
-# ----------- Disclaimer -----------
-def show_disclaimer():
-    clear_screen()
-    print(f"{RED}╔══════════════════════════════════════════════════════════════╗")
-    print(f"║{BOLD}                      SECURITY DISCLAIMER{RESET}{RED}                      ║")
-    print(f"╠══════════════════════════════════════════════════════════════╣")
-    print(f"║ {YELLOW}⚠️  This tool is for educational purposes only.{RED}                   ║")
-    print(f"║ {YELLOW}⚠️  Unauthorized use against systems is illegal.{RED}                  ║")
-    print(f"║ {YELLOW}⚠️  The author is not responsible for misuse.{RED}                     ║")
-    print(f"║ {YELLOW}⚠️  Use only on systems you own or have permission to test.{RED}       ║")
-    print(f"╚══════════════════════════════════════════════════════════════╝{RESET}")
-    
-    response = input(f"\n{GRAY}🤔 Do you agree to these terms? (y/n): {RESET}").lower()
-    return response == 'y'
-
-# ---------- Power Botnet System -----------
-class PowerBotnet:
+# ----------- نظام الطرق المتقدمة -----------
+class AdvancedMethods:
     def __init__(self):
-        self.bots = {}
-        self.bot_count = 0
-        self.command_center = "https://api.command.ayman15x3.com"
-        self.lock = threading.Lock()
-    
-    def add_bot(self, bot_id, bot_type, power_level):
-        with self.lock:
-            self.bots[bot_id] = {
-                'type': bot_type,
-                'power': power_level,
-                'status': 'active',
-                'joined': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            }
-            self.bot_count += 1
-            return True
-    
-    def remove_bot(self, bot_id):
-        with self.lock:
-            if bot_id in self.bots:
-                del self.bots[bot_id]
-                self.bot_count -= 1
-                return True
-        return False
-    
-    def get_bot_count(self):
-        with self.lock:
-            return self.bot_count
-    
-    def get_total_power(self):
-        with self.lock:
-            total_power = sum(bot['power'] for bot in self.bots.values())
-            return total_power
-    
-    def generate_bot_id(self):
-        return f"BOT-{random.randint(10000, 99999)}-{random.randint(100, 999)}"
-    
-    def deploy_bots(self, count, attack_type):
-        print(f"{YELLOW}🚀 Deploying {count} power bots...{RESET}")
-        
-        for i in range(count):
-            bot_id = self.generate_bot_id()
-            power_level = random.randint(80, 100)  # High power bots
-            bot_type = attack_type
+        self.methods = {
+            # Layer 7 Methods
+            'HTTP-FLOOD': self.http_flood,
+            'HTTPS-STORM': self.https_storm,
+            'SLOWLORIS': self.slowloris,
+            'RUDY': self.rudy_attack,
+            'GOLDEN-EYE': self.golden_eye,
             
-            if self.add_bot(bot_id, bot_type, power_level):
-                print(f"{GREEN}   ✅ Bot {bot_id} deployed (Power: {power_level}){RESET}")
+            # Layer 4 Methods
+            'TCP-FLOOD': self.tcp_flood,
+            'UDP-FLOOD': self.udp_flood,
+            'SYN-FLOOD': self.syn_flood,
+            'ACK-FLOOD': self.ack_flood,
+            'ICMP-FLOOD': self.icmp_flood,
+            
+            # Advanced Methods
+            'OVM-MUKE': self.ovm_muke,
+            'OVM-VITIAL': self.ovm_vitial,
+            'MFO-STUM': self.mfo_stum,
+            'MFO-FRAG': self.mfo_frag,
+            '10BUP-CDU': self.bup_cdu,
+            
+            # Bypass Methods
+            'CLOUDFLARE-BYPASS': self.cloudflare_bypass,
+            'PROXY-ROTATION': self.proxy_rotation,
+            'TOR-NETWORK': self.tor_network,
+        }
+    
+    def http_flood(self, target, duration, power):
+        """HTTP Flood Attack Simulation"""
+        print(f"{Colors.GREEN}🚀 Starting HTTP-FLOOD on {target}{Colors.RESET}")
+        return self._simulate_attack("HTTP", target, duration, power)
+    
+    def https_storm(self, target, duration, power):
+        """HTTPS Storm Simulation"""
+        print(f"{Colors.GREEN}⚡ Starting HTTPS-STORM on {target}{Colors.RESET}")
+        return self._simulate_attack("HTTPS", target, duration, power)
+    
+    def slowloris(self, target, duration, power):
+        """Slowloris Attack Simulation"""
+        print(f"{Colors.GREEN}🐢 Starting SLOWLORIS on {target}{Colors.RESET}")
+        return self._simulate_attack("SLOWLORIS", target, duration, power)
+    
+    def tcp_flood(self, target, duration, power):
+        """TCP Flood Simulation"""
+        print(f"{Colors.GREEN}🌊 Starting TCP-FLOOD on {target}{Colors.RESET}")
+        return self._simulate_attack("TCP", target, duration, power)
+    
+    def udp_flood(self, target, duration, power):
+        """UDP Flood Simulation"""
+        print(f"{Colors.GREEN}🌀 Starting UDP-FLOOD on {target}{Colors.RESET}")
+        return self._simulate_attack("UDP", target, duration, power)
+    
+    # Advanced Methods Implementation
+    def ovm_muke(self, target, duration, power):
+        """OVM-MUKE Method Simulation"""
+        print(f"{Colors.MAGENTA}🔥 Starting OVM-MUKE on {target}{Colors.RESET}")
+        return self._simulate_advanced_attack("OVM-MUKE", target, duration, power)
+    
+    def ovm_vitial(self, target, duration, power):
+        """OVM-VITIAL Method Simulation"""
+        print(f"{Colors.MAGENTA}💥 Starting OVM-VITIAL on {target}{Colors.RESET}")
+        return self._simulate_advanced_attack("OVM-VITIAL", target, duration, power)
+    
+    def mfo_stum(self, target, duration, power):
+        """MFO-STUM Method Simulation"""
+        print(f"{Colors.ORANGE}⚡ Starting MFO-STUM on {target}{Colors.RESET}")
+        return self._simulate_advanced_attack("MFO-STUM", target, duration, power)
+    
+    def bup_cdu(self, target, duration, power):
+        """10BUP-CDU Method Simulation"""
+        print(f"{Colors.CYAN}🎯 Starting 10BUP-CDU on {target}{Colors.RESET}")
+        return self._simulate_advanced_attack("10BUP-CDU", target, duration, power)
+    
+    def _simulate_attack(self, method, target, duration, power):
+        """محاكاة هجوم عام"""
+        progress_bar(f"Initializing {method} attack", 2, Colors.BLUE)
+        
+        total_requests = power * 100
+        successful = 0
+        start_time = time.time()
+        
+        for i in range(total_requests):
+            if time.time() - start_time > duration:
+                break
+            
+            # محاكاة نجاح/فشل الطلب
+            if random.random() > 0.2:  # 80% success rate
+                successful += 1
+            
+            if i % 100 == 0:
+                print(f"{Colors.YELLOW}📦 {method}: {i}/{total_requests} requests{Colors.RESET}")
+        
+        return successful
+    
+    def _simulate_advanced_attack(self, method, target, duration, power):
+        """محاكاة هجوم متقدم"""
+        progress_bar(f"Initializing advanced {method}", 3, Colors.PURPLE)
+        
+        total_requests = power * 200
+        successful = 0
+        start_time = time.time()
+        
+        for i in range(total_requests):
+            if time.time() - start_time > duration:
+                break
+            
+            # محاكاة أكثر تطوراً للطرق المتقدمة
+            success_rate = 0.9 - (i / total_requests) * 0.4  # تناقص تدريجي
+            if random.random() > (1 - success_rate):
+                successful += 1
+            
+            if i % 50 == 0:
+                print(f"{Colors.MAGENTA}⚡ {method}: {i}/{total_requests} | Success rate: {success_rate:.1%}{Colors.RESET}")
+        
+        return successful
+
+# ----------- واجهة المستخدم المتقدمة -----------
+def show_methods_menu():
+    print(f"\n{Colors.GREEN}╔══════════════════════════════════════════════════════════════╗")
+    print(f"║{Colors.BOLD}                   ADVANCED METHODS MENU{Colors.RESET}{Colors.GREEN}                   ║")
+    print(f"╠══════════════════════════════════════════════════════════════╣")
+    
+    methods = [
+        ("1", "HTTP-FLOOD", "Layer 7 HTTP Flood"),
+        ("2", "HTTPS-STORM", "Secure HTTPS Flood"),
+        ("3", "SLOWLORIS", "Slow HTTP Attack"),
+        ("4", "TCP-FLOOD", "Layer 4 TCP Flood"),
+        ("5", "UDP-FLOOD", "Layer 4 UDP Flood"),
+        ("6", "OVM-MUKE", "Advanced OVM Method"),
+        ("7", "OVM-VITIAL", "Advanced OVM Method"),
+        ("8", "MFO-STUM", "Multi-Fragment Attack"),
+        ("9", "10BUP-CDU", "Advanced BUP Method"),
+        ("0", "BACK", "Return to Main Menu")
+    ]
+    
+    for num, name, desc in methods:
+        print(f"║ {Colors.CYAN}{num}.{Colors.RESET} {name:<15} {desc:<30} ║")
+    
+    print(f"╚══════════════════════════════════════════════════════════════╝{Colors.RESET}")
+    
+    try:
+        choice = int(input(f"\n{Colors.GRAY}🎯 Choose method (0-9): {Colors.RESET}"))
+        return choice
+    except ValueError:
+        return -1
+
+# ----------- البرنامج الرئيسي المحسن -----------
+def main():
+    # العرض التقديمي الأولي
+    animated_banner()
+    clear_screen()
+    print_logo()
+    
+    # رسالة ترحيب
+    print(f"{Colors.GREEN}╔══════════════════════════════════════════════════════════════╗")
+    print(f"║{Colors.BOLD}{Colors.CYAN}            ADVANCED TESTING FRAMEWORK v5.0{Colors.RESET}{Colors.GREEN}            ║")
+    print(f"║{Colors.BOLD}{Colors.CYAN}           Professional Load Testing Suite{Colors.RESET}{Colors.GREEN}           ║")
+    print(f"╚══════════════════════════════════════════════════════════════╝{Colors.RESET}")
+    
+    # التحقق من الشروط
+    print(f"\n{Colors.YELLOW}📜 Please read the terms carefully:{Colors.RESET}")
+    print(f"{Colors.GRAY}• For educational purposes only")
+    print(f"• Test only authorized systems")
+    print(f"• Localhost testing recommended{Colors.RESET}")
+    
+    agree = input(f"\n{Colors.GRAY}🤝 Do you agree? (y/n): {Colors.RESET}").lower()
+    if agree != 'y':
+        print(f"{Colors.RED}❌ Agreement required. Exiting...{Colors.RESET}")
+        return
+    
+    # تهيئة نظام الطرق
+    methods_system = AdvancedMethods()
+    
+    while True:
+        clear_screen()
+        print_logo()
+        
+        choice = show_methods_menu()
+        
+        if choice == 0:
+            print(f"{Colors.GREEN}\n👋 Returning to main menu...{Colors.RESET}")
+            break
+        
+        elif 1 <= choice <= 9:
+            method_map = {
+                1: 'HTTP-FLOOD',
+                2: 'HTTPS-STORM', 
+                3: 'SLOWLORIS',
+                4: 'TCP-FLOOD',
+                5: 'UDP-FLOOD',
+                6: 'OVM-MUKE',
+                7: 'OVM-VITIAL',
+                8: 'MFO-STUM',
+                9: '10BUP-CDU'
+            }
+            
+            method_name = method_map[choice]
+            
+            # إدخال параметры
+            print(f"\n{Colors.YELLOW}⚙️  Configuring {method_name}{Colors.RESET}")
+            target = input(f"{Colors.GRAY}🎯 Target (localhost recommended): {Colors.RESET}")
+            
+            # فحص الإذن للاهداف الخارجية
+            if not any(local in target for local in ['localhost', '127.0.0.1', '::1']):
+                confirm = input(f"{Colors.RED}⚠️  External target! Continue? (y/n): {Colors.RESET}").lower()
+                if confirm != 'y':
+                    continue
+            
+            try:
+                duration = int(input(f"{Colors.GRAY}⏰ Duration (seconds): {Colors.RESET}"))
+                power = int(input(f"{Colors.GRAY}💪 Power level (1-10): {Colors.RESET}"))
+                
+                if not (1 <= power <= 10):
+                    print(f"{Colors.RED}❌ Power must be between 1-10{Colors.RESET}")
+                    continue
+                
+                # تنفيذ الطريقة
+                success = methods_system.methods[method_name](target, duration, power)
+                
+                # عرض النتائج
+                print(f"\n{Colors.GREEN}✅ {method_name} completed!{Colors.RESET}")
+                print(f"{Colors.CYAN}📊 Successful requests: {success}{Colors.RESET}")
+                print(f"{Colors.CYAN}🎯 Target: {target}{Colors.RESET}")
+                print(f"{Colors.CYAN}⏰ Duration: {duration}s{Colors.RESET}")
+                
+            except ValueError:
+                print(f"{Colors.RED}❌ Invalid input{Colors.RESET}")
+            except Exception as e:
+                print(f"{Colors.RED}❌ Error: {str(e)}{Colors.RESET}")
+            
+            input(f"\n{Colors.GRAY}Press Enter to continue...{Colors.RESET}")
+        
+        else:
+            print(f"{Colors.RED}❌ Invalid choice{Colors.RESET}")
+            time.sleep(1)
+
+if __name__ == "__main__":
+    main()                print(f"{GREEN}   ✅ Bot {bot_id} deployed (Power: {power_level}){RESET}")
                 time.sleep(0.1)
         
         print(f"{GREEN}✅ Successfully deployed {count} power bots!{RESET}")
@@ -531,3 +713,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
